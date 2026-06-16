@@ -1,7 +1,12 @@
 const imageWidth = 2560;
 const imageHeight = 1656;
+
 const SHEET_ID = "1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
-const SHEET_NAME = "lokalizacje";
+
+let lokalizacje = [];
+let druzyny = [];
+let tagi = [];
+let sesje = [];
 
 const map = L.map("map", {
     crs: L.CRS.Simple,
@@ -59,28 +64,57 @@ map.on("contextmenu", function (e) {
     .openOn(map);
 });
 
-const csvUrl =
-`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+async function loadSheet(sheetName) {
 
-Papa.parse(csvUrl, {
-    download: true,
-    header: true,
-    complete: function(results) {
+    const csvUrl =
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
-        console.log(results.data);
+    return new Promise((resolve) => {
 
-        results.data.forEach(location => {
-
-            if (!location.x || !location.y) {
-                return;
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                resolve(results.data);
             }
-
-            const lat = (1 - parseFloat(location.y)) * imageHeight;
-            const lng = parseFloat(location.x) * imageWidth;
-
-            L.marker([lat, lng])
-            .addTo(map)
-            .bindPopup(location.nazwa);
         });
-    }
-});
+
+    });
+}
+
+function drawLocations() {
+
+    lokalizacje.forEach(location => {
+
+        if (!location.x || !location.y) {
+            return;
+        }
+
+        const lat =
+        (1 - parseFloat(location.y)) * imageHeight;
+
+        const lng =
+        parseFloat(location.x) * imageWidth;
+
+        L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(location.nazwa);
+    });
+}
+
+async function loadData() {
+
+    lokalizacje = await loadSheet("lokalizacje");
+    druzyny = await loadSheet("druzyny");
+    tagi = await loadSheet("tagi");
+    sesje = await loadSheet("sesje");
+
+    console.log("Lokalizacje:", lokalizacje);
+    console.log("Druzyny:", druzyny);
+    console.log("Tagi:", tagi);
+    console.log("Sesje:", sesje);
+
+    drawLocations();
+}
+
+loadData();
