@@ -315,11 +315,12 @@ async function loadData() {
         "Sesje w Filadelfii:"
     );
 
-    console.table(
-        sesje.filter(
-            session =>
-            session.lokalizacje ===
-            "filadelfia"
+    console.log("PIERWSZE 5 SESJI");
+    console.table(sesje.slice(0, 5));
+    console.log("SESJA 3");
+    console.log(
+        sesje.find(
+            x => x.id === "sesja_3"
         )
     );
 
