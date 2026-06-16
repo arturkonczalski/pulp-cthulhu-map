@@ -87,7 +87,23 @@ async function loadSheet(sheetName) {
         Papa.parse(csvUrl, {
             download: true,
             header: true,
+            skipEmptyLines: true,
+
             complete: function(results) {
+
+                console.log(
+                    `=== ${sheetName} ===`
+                );
+
+                console.log(
+                    "Errors:",
+                    results.errors
+                );
+
+                console.table(
+                    results.data
+                );
+
                 resolve(results.data);
             }
         });
@@ -135,9 +151,6 @@ function renderCurrentSession() {
 
     const session =
     currentLocationSessions[currentSessionIndex];
-
-    console.log(session);
-    alert(JSON.stringify(session, null, 2));
 
     sessionContent.innerHTML = `
     <div style="margin-bottom:20px;">
@@ -286,19 +299,29 @@ function drawLocations() {
 
 async function loadData() {
 
-    lokalizacje = await loadSheet("lokalizacje");
-    druzyny = await loadSheet("druzyny");
-    tagi = await loadSheet("tagi");
-    sesje = await loadSheet("sesje");
-    console.table(sesje);
-    console.log(sesje);
-    console.log(sesje[2]);
-    console.log(Object.keys(sesje[2]));
+    lokalizacje =
+    await loadSheet("lokalizacje");
 
-    console.log("Lokalizacje:", lokalizacje);
-    console.log("Druzyny:", druzyny);
-    console.log("Tagi:", tagi);
-    console.log("Sesje:", sesje);
+    druzyny =
+    await loadSheet("druzyny");
+
+    tagi =
+    await loadSheet("tagi");
+
+    sesje =
+    await loadSheet("sesje");
+
+    console.log(
+        "Sesje w Filadelfii:"
+    );
+
+    console.table(
+        sesje.filter(
+            session =>
+            session.lokalizacje ===
+            "filadelfia"
+        )
+    );
 
     drawLocations();
 }
