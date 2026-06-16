@@ -80,7 +80,7 @@ map.on("contextmenu", function (e) {
 async function loadSheet(sheetName) {
 
     const csvUrl =
-    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${sheetName}`;
 
     return new Promise((resolve) => {
 
@@ -95,13 +95,8 @@ async function loadSheet(sheetName) {
                     `=== ${sheetName} ===`
                 );
 
-                console.log(
-                    "Errors:",
-                    results.errors
-                );
-
                 console.table(
-                    results.data
+                    results.data.slice(0, 5)
                 );
 
                 resolve(results.data);
