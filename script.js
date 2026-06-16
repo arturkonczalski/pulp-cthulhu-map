@@ -8,6 +8,9 @@ let druzyny = [];
 let tagi = [];
 let sesje = [];
 
+let currentLocationSessions = [];
+let currentSessionIndex = 0;
+
 const map = L.map("map", {
     crs: L.CRS.Simple,
     minZoom: -4,
@@ -114,44 +117,130 @@ function getSessionsForLocation(locationId) {
     );
 }
 
-function openLocationPanel(location, locationSessions) {
+function renderCurrentSession() {
+
+    if (currentLocationSessions.length === 0) {
+
+        sessionContent.innerHTML =
+        "<p>Brak sesji.</p>";
+
+        return;
+    }
+
+    const session =
+    currentLocationSessions[currentSessionIndex];
+
+    sessionContent.innerHTML = `
+    <div style="margin-bottom:20px;">
+
+    <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    ">
+
+    <button id="prev-session">
+    ◀
+    </button>
+
+    <div>
+    ${currentSessionIndex + 1}
+    /
+    ${currentLocationSessions.length}
+    </div>
+
+    <button id="next-session">
+    ▶
+    </button>
+
+    </div>
+
+    <h2>
+    Sesja ${session.numer_sesji}
+    </h2>
+
+    <h3>
+    ${session.tytul || ""}
+    </h3>
+
+    <p>
+    ${session.data || ""}
+    </p>
+
+    ${
+        session.link
+        ? `
+        <p>
+        <a href="${session.link}"
+        target="_blank">
+        Obejrzyj
+        </a>
+        </p>
+        `
+        : ""
+    }
+
+    <div>
+    ${session.opis || ""}
+    </div>
+
+    </div>
+    `;
+
+    const prevButton =
+    document.getElementById("prev-session");
+
+    const nextButton =
+    document.getElementById("next-session");
+
+    prevButton.disabled =
+    currentSessionIndex === 0;
+
+    nextButton.disabled =
+    currentSessionIndex ===
+    currentLocationSessions.length - 1;
+
+    prevButton.addEventListener("click", () => {
+
+        if (currentSessionIndex > 0) {
+
+            currentSessionIndex--;
+
+            renderCurrentSession();
+        }
+    });
+
+    nextButton.addEventListener("click", () => {
+
+        if (
+            currentSessionIndex <
+            currentLocationSessions.length - 1
+        ) {
+
+            currentSessionIndex++;
+
+            renderCurrentSession();
+        }
+    });
+}
+
+function openLocationPanel(
+    location,
+    locationSessions
+) {
 
     sessionPanel.classList.remove("hidden");
 
     sessionHeader.textContent =
     location.nazwa;
 
-    let html = "";
+    currentLocationSessions =
+    locationSessions;
 
-    if (locationSessions.length === 0) {
+    currentSessionIndex = 0;
 
-        html = `
-        <p>Brak sesji w tej lokalizacji.</p>
-        `;
-
-    } else {
-
-        locationSessions.forEach(session => {
-
-            html += `
-            <div style="margin-bottom: 20px;">
-
-            <div>
-            <strong>
-            Sesja ${session.numer_sesji}
-            </strong>
-            </div>
-
-            <div>
-            ${session.tytul || ""}
-            </div>
-
-            </div>
-            `;
-        });
-    }
-
-    sessionContent.innerHTML = html;
+    renderCurrentSession();
 }
 
 function drawLocations() {
