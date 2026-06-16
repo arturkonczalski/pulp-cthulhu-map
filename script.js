@@ -112,8 +112,14 @@ function getSessionsForLocation(locationId) {
 
     })
     .sort((a, b) =>
-    Number(a.numer_sesji) -
-    Number(b.numer_sesji)
+    a.numer_sesji.localeCompare(
+        b.numer_sesji,
+        undefined,
+        {
+            numeric: true,
+            sensitivity: "base"
+        }
+    )
     );
 }
 
