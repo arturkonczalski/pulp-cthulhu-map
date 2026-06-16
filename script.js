@@ -1,5 +1,7 @@
 const imageWidth = 2560;
 const imageHeight = 1656;
+const SHEET_ID = "1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
+const SHEET_NAME = "lokalizacje";
 
 const map = L.map("map", {
     crs: L.CRS.Simple,
@@ -56,9 +58,6 @@ map.on("contextmenu", function (e) {
     `)
     .openOn(map);
 });
-
-const SHEET_ID = "1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
-const SHEET_NAME = "lokalizacje";
 
 const csvUrl =
 `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
