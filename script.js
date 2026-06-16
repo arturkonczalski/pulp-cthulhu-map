@@ -15,25 +15,35 @@ const bounds = [
 L.imageOverlay("assets/mapa.jpg", bounds).addTo(map);
 
 map.fitBounds(bounds);
-
 map.setMaxBounds(bounds);
 
 const coords = document.getElementById("coords");
 
+function getNormalizedCoords(latlng) {
+    const x = latlng.lng / imageWidth;
+    const y = 1 - (latlng.lat / imageHeight);
+
+    return {
+        x,
+        y
+    };
+}
+
 map.on("mousemove", function (e) {
 
-    const x = e.latlng.lng / imageWidth;
-    const y = e.latlng.lat / imageHeight;
+    const pos = getNormalizedCoords(e.latlng);
 
     coords.innerHTML =
-    `X: ${x.toFixed(4)}<br>` +
-    `Y: ${y.toFixed(4)}`;
+    `X: ${pos.x.toFixed(4)}<br>` +
+    `Y: ${pos.y.toFixed(4)}`;
 });
 
 map.on("contextmenu", function (e) {
 
-    const x = (e.latlng.lng / imageWidth).toFixed(4);
-    const y = (e.latlng.lat / imageHeight).toFixed(4);
+    const pos = getNormalizedCoords(e.latlng);
+
+    const x = pos.x.toFixed(4);
+    const y = pos.y.toFixed(4);
 
     navigator.clipboard.writeText(`${x},${y}`);
 
