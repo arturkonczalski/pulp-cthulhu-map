@@ -82,6 +82,28 @@ async function loadSheet(sheetName) {
     });
 }
 
+function getSessionsForLocation(locationId) {
+
+    return sesje
+    .filter(session => {
+
+        if (!session.lokalizacje) {
+            return false;
+        }
+
+        const locations = session.lokalizacje
+        .split(";")
+        .map(x => x.trim());
+
+        return locations.includes(locationId);
+
+    })
+    .sort((a, b) =>
+    Number(a.numer_sesji) -
+    Number(b.numer_sesji)
+    );
+}
+
 function drawLocations() {
 
     lokalizacje.forEach(location => {
@@ -96,9 +118,30 @@ function drawLocations() {
         const lng =
         parseFloat(location.x) * imageWidth;
 
+        const locationSessions =
+        getSessionsForLocation(location.id);
+
+        let popupContent =
+        `<b>${location.nazwa}</b>`;
+
+        if (locationSessions.length > 0) {
+
+            popupContent += "<hr>";
+
+            locationSessions.forEach(session => {
+
+                popupContent += `
+                <div>
+                Sesja ${session.numer_sesji}
+                - ${session.tytul}
+                </div>
+                `;
+            });
+        }
+
         L.marker([lat, lng])
         .addTo(map)
-        .bindPopup(location.nazwa);
+        .bindPopup(popupContent);
     });
 }
 
