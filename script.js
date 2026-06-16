@@ -90,22 +90,12 @@ async function loadSheet(sheetName) {
             skipEmptyLines: true,
 
             complete: function(results) {
-
-                console.log(
-                    `=== ${sheetName} ===`
-                );
-
-                console.table(
-                    results.data.slice(0, 5)
-                );
-
                 resolve(results.data);
             }
         });
 
     });
 }
-
 function getSessionsForLocation(locationId) {
 
     return sesje
@@ -305,19 +295,6 @@ async function loadData() {
 
     sesje =
     await loadSheet("sesje");
-
-    console.log(
-        "Sesje w Filadelfii:"
-    );
-
-    console.log("PIERWSZE 5 SESJI");
-    console.table(sesje.slice(0, 5));
-    console.log("SESJA 3");
-    console.log(
-        sesje.find(
-            x => x.id === "sesja_3"
-        )
-    );
 
     drawLocations();
 }
