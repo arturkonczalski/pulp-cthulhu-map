@@ -26,7 +26,17 @@ map.setMaxBounds(bounds);
 
 const coords = document.getElementById("coords");
 
+const sessionPanel =
+document.getElementById("session-panel");
+
+const sessionHeader =
+document.getElementById("session-header");
+
+const sessionContent =
+document.getElementById("session-content");
+
 function getNormalizedCoords(latlng) {
+
     const x = latlng.lng / imageWidth;
     const y = 1 - (latlng.lat / imageHeight);
 
@@ -104,6 +114,46 @@ function getSessionsForLocation(locationId) {
     );
 }
 
+function openLocationPanel(location, locationSessions) {
+
+    sessionPanel.classList.remove("hidden");
+
+    sessionHeader.textContent =
+    location.nazwa;
+
+    let html = "";
+
+    if (locationSessions.length === 0) {
+
+        html = `
+        <p>Brak sesji w tej lokalizacji.</p>
+        `;
+
+    } else {
+
+        locationSessions.forEach(session => {
+
+            html += `
+            <div style="margin-bottom: 20px;">
+
+            <div>
+            <strong>
+            Sesja ${session.numer_sesji}
+            </strong>
+            </div>
+
+            <div>
+            ${session.tytul || ""}
+            </div>
+
+            </div>
+            `;
+        });
+    }
+
+    sessionContent.innerHTML = html;
+}
+
 function drawLocations() {
 
     lokalizacje.forEach(location => {
@@ -121,27 +171,18 @@ function drawLocations() {
         const locationSessions =
         getSessionsForLocation(location.id);
 
-        let popupContent =
-        `<b>${location.nazwa}</b>`;
-
-        if (locationSessions.length > 0) {
-
-            popupContent += "<hr>";
-
-            locationSessions.forEach(session => {
-
-                popupContent += `
-                <div>
-                Sesja ${session.numer_sesji}
-                - ${session.tytul}
-                </div>
-                `;
-            });
-        }
-
+        const marker =
         L.marker([lat, lng])
-        .addTo(map)
-        .bindPopup(popupContent);
+        .addTo(map);
+
+        marker.on("click", () => {
+
+            openLocationPanel(
+                location,
+                locationSessions
+            );
+
+        });
     });
 }
 

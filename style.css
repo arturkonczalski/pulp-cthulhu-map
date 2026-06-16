@@ -26,3 +26,40 @@ border-radius: 8px;
 
 font-family: monospace;
 }
+
+#session-panel {
+position: fixed;
+
+top: 0;
+right: 0;
+
+width: 400px;
+height: 100vh;
+
+background: white;
+
+border-left: 1px solid #ccc;
+
+z-index: 1000;
+
+overflow-y: auto;
+
+box-sizing: border-box;
+}
+
+#session-header {
+font-size: 24px;
+font-weight: bold;
+
+padding: 16px;
+
+border-bottom: 1px solid #ddd;
+}
+
+#session-content {
+padding: 16px;
+}
+
+.hidden {
+    display: none;
+}
