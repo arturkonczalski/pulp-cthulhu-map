@@ -136,6 +136,9 @@ function renderCurrentSession() {
     const session =
     currentLocationSessions[currentSessionIndex];
 
+    console.log(session);
+    alert(JSON.stringify(session, null, 2));
+
     sessionContent.innerHTML = `
     <div style="margin-bottom:20px;">
 
