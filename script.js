@@ -111,16 +111,16 @@ function getSessionsForLocation(locationId) {
         return locations.includes(locationId);
 
     })
-    .sort((a, b) =>
-    a.numer_sesji.localeCompare(
-        b.numer_sesji,
-        undefined,
-        {
-            numeric: true,
-            sensitivity: "base"
-        }
-    )
-    );
+    .sort((a, b) => {
+
+        const idA =
+        Number(a.id.match(/\d+/)?.[0] || 0);
+
+        const idB =
+        Number(b.id.match(/\d+/)?.[0] || 0);
+
+        return idA - idB;
+    });
 }
 
 function renderCurrentSession() {
