@@ -14,10 +14,9 @@ const bounds = [
 
 L.imageOverlay("assets/mapa.jpg", bounds).addTo(map);
 
-map.setView(
-    [imageHeight / 2, imageWidth / 2],
-    -1
-);
+map.fitBounds(bounds);
+
+map.setMaxBounds(bounds);
 
 const coords = document.getElementById("coords");
 
@@ -38,8 +37,12 @@ map.on("contextmenu", function (e) {
 
     navigator.clipboard.writeText(`${x},${y}`);
 
-    L.marker(e.latlng)
-    .addTo(map)
-    .bindPopup(`Skopiowano:<br>${x},${y}`)
-    .openPopup();
+    L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`
+    <b>Skopiowano współrzędne</b><br>
+    X: ${x}<br>
+    Y: ${y}
+    `)
+    .openOn(map);
 });
