@@ -8,6 +8,13 @@ let druzyny = [];
 let tagi = [];
 let sesje = [];
 
+const SHEETS = {
+    lokalizacje: "0",
+    druzyny: "358228522",
+    tagi: "1613408979",
+    sesje: "1580573064"
+};
+
 let currentLocationSessions = [];
 let currentSessionIndex = 0;
 
@@ -80,7 +87,7 @@ map.on("contextmenu", function (e) {
 async function loadSheet(sheetName) {
 
     const csvUrl =
-    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${sheetName}`;
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEETS[sheetName]}`;
 
     return new Promise((resolve) => {
 
@@ -96,6 +103,7 @@ async function loadSheet(sheetName) {
 
     });
 }
+
 function getSessionsForLocation(locationId) {
 
     return sesje
@@ -286,7 +294,6 @@ async function loadData() {
 
     lokalizacje =
     await loadSheet("lokalizacje");
-    console.log(lokalizacje[0]);
 
     druzyny =
     await loadSheet("druzyny");
