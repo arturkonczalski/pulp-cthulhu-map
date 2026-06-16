@@ -290,6 +290,9 @@ async function loadData() {
     druzyny = await loadSheet("druzyny");
     tagi = await loadSheet("tagi");
     sesje = await loadSheet("sesje");
+    console.log(sesje);
+    console.log(sesje[2]);
+    console.log(Object.keys(sesje[2]));
 
     console.log("Lokalizacje:", lokalizacje);
     console.log("Druzyny:", druzyny);
