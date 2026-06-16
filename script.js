@@ -56,3 +56,32 @@ map.on("contextmenu", function (e) {
     `)
     .openOn(map);
 });
+
+const SHEET_ID = "1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
+const SHEET_NAME = "lokalizacje";
+
+const csvUrl =
+`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+
+Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    complete: function(results) {
+
+        console.log(results.data);
+
+        results.data.forEach(location => {
+
+            if (!location.x || !location.y) {
+                return;
+            }
+
+            const lat = parseFloat(location.y) * imageHeight;
+            const lng = parseFloat(location.x) * imageWidth;
+
+            L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(location.nazwa);
+        });
+    }
+});
