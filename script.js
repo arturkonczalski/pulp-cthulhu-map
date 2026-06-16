@@ -23,7 +23,7 @@ const coords = document.getElementById("coords");
 
 function getNormalizedCoords(latlng) {
     const x = latlng.lng / imageWidth;
-    const y = (latlng.lat / imageHeight);
+    const y = 1 - (latlng.lat / imageHeight);
 
     return {
         x,
@@ -75,7 +75,7 @@ Papa.parse(csvUrl, {
                 return;
             }
 
-            const lat = parseFloat(location.y) * imageHeight;
+            const lat = (1 - parseFloat(location.y)) * imageHeight;
             const lng = parseFloat(location.x) * imageWidth;
 
             L.marker([lat, lng])
