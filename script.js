@@ -3,7 +3,7 @@ const imageHeight = 1656;
 
 const map = L.map("map", {
     crs: L.CRS.Simple,
-    minZoom: -2,
+    minZoom: -4,
     maxZoom: 3
 });
 
@@ -14,7 +14,10 @@ const bounds = [
 
 L.imageOverlay("assets/mapa.jpg", bounds).addTo(map);
 
-map.fitBounds(bounds);
+map.setView(
+    [imageHeight / 2, imageWidth / 2],
+    -1
+);
 
 const coords = document.getElementById("coords");
 
