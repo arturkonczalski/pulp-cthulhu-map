@@ -23,7 +23,7 @@ const coords = document.getElementById("coords");
 
 function getNormalizedCoords(latlng) {
     const x = latlng.lng / imageWidth;
-    const y = 1 - (latlng.lat / imageHeight);
+    const y = latlng.lat / imageHeight;
 
     return {
         x,
