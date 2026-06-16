@@ -286,6 +286,7 @@ async function loadData() {
 
     lokalizacje =
     await loadSheet("lokalizacje");
+    console.log(lokalizacje[0]);
 
     druzyny =
     await loadSheet("druzyny");
