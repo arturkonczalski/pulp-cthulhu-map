@@ -99,7 +99,7 @@ const pinIcon = L.icon({
 
     iconSize: [40, 74],
 
-    iconAnchor: [20, 73],
+    iconAnchor: [50, 73],
 
     popupAnchor: [0, -70]
 
