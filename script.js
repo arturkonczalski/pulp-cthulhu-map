@@ -51,7 +51,7 @@ const bounds = [
 [imageHeight, imageWidth]
 ];
 
-L.imageOverlay("assets/mapa.jpg", bounds).addTo(map);
+L.imageOverlay("assets/mapa.png", bounds).addTo(map);
 
 map.fitBounds(bounds);
 map.setMaxBounds(bounds);
