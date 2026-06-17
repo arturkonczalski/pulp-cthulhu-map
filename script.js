@@ -180,13 +180,13 @@ function renderCurrentSession() {
     const session =
     currentLocationSessions[currentSessionIndex];
 
-    const team =
-    getTeam(session.druzyny);
-
-    const logo =
-    team?.logo_id
-    ? getDriveImage(team.logo_id)
-    : "";
+    const teams = session.druzyny
+    ? session.druzyny
+    .split(";")
+    .map(x => x.trim())
+    .map(getTeam)
+    .filter(Boolean)
+    : [];
 
     sessionContent.innerHTML = `
     <div style="margin-bottom:20px;">
@@ -214,27 +214,20 @@ function renderCurrentSession() {
     </div>
 
 
-    ${logo ?
+    ${teams.length ? `
 
-        `
-        <div style="
-        text-align:center;
-        margin-bottom:15px;
-        ">
+        <div class="session-logos">
 
-        <img
-        src="${logo}"
+        ${teams.map(team => `
 
-        style="
-        max-width:120px;
-        max-height:120px;
-        object-fit:contain;
-        ">
+            <img
+            src="${getDriveImage(team.logo_id)}">
 
-        </div>
-        `
+            `).join("")}
 
-        : ""}
+            </div>
+
+            ` : ""}
 
 
         <h2 style="text-align:center;">
