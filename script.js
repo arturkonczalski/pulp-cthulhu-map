@@ -238,10 +238,6 @@ function renderCurrentSession() {
         ${session.tytul || ""}
         </h3>
 
-        <p style="text-align:center;">
-        ${session.data || ""}
-        </p>
-
         ${
             session.link
             ?
@@ -256,6 +252,10 @@ function renderCurrentSession() {
             :
             ""
         }
+
+        <p style="text-align:center;">
+        ${session.data || ""}
+        </p>
 
         <div>
         ${session.opis || ""}
