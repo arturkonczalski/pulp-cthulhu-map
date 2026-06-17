@@ -56,6 +56,14 @@ L.imageOverlay("assets/mapa.png", bounds).addTo(map);
 map.fitBounds(bounds);
 map.setMaxBounds(bounds);
 
+setTimeout(() => {
+
+    map.invalidateSize();
+
+    map.fitBounds(bounds);
+
+}, 500);
+
 const coords = document.getElementById("coords");
 
 const sessionPanel =
