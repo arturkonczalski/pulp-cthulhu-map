@@ -154,30 +154,41 @@ button:hover{
 
 }
 
-
 #search{
 
-background:
-rgba(245,240,220,.95);
+background:rgba(245,240,220,.95);
 
 border:1px solid #bca06a;
 
 padding:12px;
 
-font-family:
-'Cormorant Garamond';
+font-family:'Cormorant Garamond';
 
 font-size:20px;
+
+box-sizing:border-box;
 
 }
 
 
 #search-results{
 
-background:
-rgba(245,240,220,.95);
+background:rgba(245,240,220,.95);
+
+max-height:300px;
+
+overflow-y:auto;
+
+border:none;
+
+}
+
+
+#search-results:not(:empty){
 
 border:1px solid #bca06a;
+
+margin-top:4px;
 
 }
 
@@ -193,6 +204,6 @@ border:1px solid #bca06a;
 
 .search-result:hover{
 
-    background:#eee;
+    background:rgba(210,180,120,.2);
 
 }
