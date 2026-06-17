@@ -47,14 +47,6 @@ const pinIcon = L.icon({
 
 
 const bounds = [
-
-    [0,0],
-
-[imageHeight,imageWidth]
-
-];
-
-const bounds = [
     [0, 0],
 [imageHeight, imageWidth]
 ];
