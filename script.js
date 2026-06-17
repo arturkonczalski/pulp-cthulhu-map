@@ -26,10 +26,16 @@ document.getElementById("search-results");
 let currentLocationSessions = [];
 let currentSessionIndex = 0;
 
-const map = L.map("map", {
-    crs: L.CRS.Simple,
-    minZoom: -4,
-    maxZoom: 3
+const pinIcon = L.icon({
+
+    iconUrl: "assets/pin.png",
+
+    iconSize: [40, 40],
+
+    iconAnchor: [20, 40],
+
+    popupAnchor: [0, -40]
+
 });
 
 const bounds = [
@@ -337,7 +343,11 @@ function drawLocations() {
         getSessionsForLocation(location.id);
 
         const marker =
-        L.marker([lat, lng])
+        L.marker([lat, lng], {
+
+            icon: pinIcon
+
+        })
         .addTo(map);
         markers[location.id]=marker;
 
