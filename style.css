@@ -122,9 +122,13 @@ text-shadow:
 
 .session-logos{
 
-    display:grid;
+    display:flex;
 
-    grid-template-columns:repeat(3,1fr);
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    align-items:center;
 
     gap:15px;
 
@@ -135,15 +139,13 @@ text-shadow:
 
 .session-logos img{
 
-    width:100%;
+    width:120px;
 
-    max-width:120px;
-
-    max-height:120px;
+    height:120px;
 
     object-fit:contain;
 
-    justify-self:center;
+    flex-shrink:1;
 
 }
 
