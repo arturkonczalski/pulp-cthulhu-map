@@ -37,9 +37,9 @@ const pinIcon = L.icon({
 
     iconUrl: "assets/pin.png",
 
-    iconSize: [70, 128],
+    iconSize: [35, 64],
 
-    iconAnchor: [35, 127],
+    iconAnchor: [36, 127],
 
     popupAnchor: [0, -120]
 
