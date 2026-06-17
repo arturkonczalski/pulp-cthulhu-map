@@ -1,33 +1,52 @@
+/* ==========================================
+ *  OGÓLNE USTAWIENIA STRONY
+ = *========================================= */
+
 html,
 body {
 
-    background:
-    url("assets/paper.webp");
+    background: url("assets/paper.webp");
+    background-size: cover;
 
-    background-size:cover;
     margin: 0;
     padding: 0;
+
     height: 100%;
 }
 
+
+/* ==========================================
+ *  LEAFLET
+ = *========================================= */
+
 #map {
+
 width: 100%;
 height: 100vh;
-}
-.leaflet-container{
-
-    background:transparent;
 
 }
+
+.leaflet-container {
+
+    background: transparent;
+
+}
+
+
+/* ==========================================
+ *  WYŚWIETLANIE WSPÓŁRZĘDNYCH
+ = *========================================= */
 
 #coords {
+
 position: fixed;
+
 right: 10px;
 bottom: 10px;
 
 z-index: 1000;
 
-background: rgba(0, 0, 0, 0.8);
+background: rgba(0,0,0,.8);
 color: white;
 
 padding: 10px;
@@ -35,9 +54,16 @@ padding: 10px;
 border-radius: 8px;
 
 font-family: monospace;
+
 }
 
+
+/* ==========================================
+ *  PANEL SESJI
+ = *========================================= */
+
 #session-panel {
+
 position: fixed;
 
 top: 0;
@@ -45,6 +71,9 @@ right: 0;
 
 width: 400px;
 height: 100vh;
+
+
+/* Tło */
 
 background:
 linear-gradient(
@@ -54,185 +83,228 @@ linear-gradient(
     #061f28 100%
 );
 
-border-left:1px solid rgba(210,180,120,.4);
+
+border-left:
+1px solid rgba(210,180,120,.4);
+
 
 box-shadow:
 -10px 0 30px rgba(0,0,0,.4);
 
-color:#eadfb3;
 
-padding:20px;
+color: #eadfb3;
 
-z-index: 1000;
+padding: 20px;
 
 overflow-y: auto;
 
 box-sizing: border-box;
-}
 
-#session-header{
-
-font-family:'Cinzel';
-
-font-size:42px;
-
-letter-spacing:2px;
-
-color:#eadfb3;
-
-border:none;
-
-padding-bottom:25px;
+z-index: 1000;
 
 }
 
-.hidden {
-    display: none;
+
+#session-header {
+
+font-family: 'Cinzel';
+
+font-size: 42px;
+
+letter-spacing: 2px;
+
+color: #eadfb3;
+
+padding-bottom: 25px;
+
 }
 
-#session-content{
+
+#session-content {
 
 font-family:
 'Cormorant Garamond';
 
-font-size:22px;
+font-size: 22px;
 
-line-height:1.6;
+line-height: 1.6;
 
-color:#efe7c9;
-
-}
-
-#session-content a{
-
-color:#eadfb3;
-
-text-decoration:none;
+color: #efe7c9;
 
 }
 
-#session-content a:hover{
 
-color:#fff3c5;
+/* Linki */
+
+#session-content a {
+
+color: #eadfb3;
+
+text-decoration: none;
+
+}
+
+
+#session-content a:hover {
+
+color: #fff3c5;
 
 text-shadow:
 0 0 6px rgba(255,230,160,.5);
 
 }
 
-.session-logos{
 
-    display:flex;
+/* Ukrywanie panelu */
 
-    flex-wrap:wrap;
+.hidden {
 
-    justify-content:center;
-
-    align-items:center;
-
-    gap:15px;
-
-    margin-bottom:15px;
+    display: none;
 
 }
 
 
-.session-logos img{
+/* ==========================================
+ *  LOGOTYPY DRUŻYN
+ = *========================================= */
 
-    width:120px;
+.session-logos {
 
-    height:120px;
+    display: flex;
 
-    object-fit:contain;
+    flex-wrap: wrap;
 
-    flex-shrink:1;
+    justify-content: center;
 
-}
+    align-items: center;
 
-#search-container{
+    gap: 15px;
 
-position:fixed;
-
-top:10px;
-left:60px;
-
-z-index:1000;
-
-width:300px;
-
-}
-button{
-
-    background:none;
-
-    border:1px solid #bda16f;
-
-    color:#eadfb3;
-
-    padding:6px 12px;
-
-    cursor:pointer;
+    margin-bottom: 15px;
 
 }
 
 
-button:hover{
+.session-logos img {
+
+    width: 120px;
+    height: 120px;
+
+    object-fit: contain;
+
+    flex-shrink: 1;
+
+}
+
+
+/* ==========================================
+ *  PRZYCISKI KARUZELI SESJI
+ = *========================================= */
+
+button {
+
+    background: none;
+
+    border:
+    1px solid #bda16f;
+
+    color: #eadfb3;
+
+    padding: 6px 12px;
+
+    cursor: pointer;
+
+}
+
+
+button:hover {
 
     background:
     rgba(255,255,255,.05);
 
 }
 
-#search{
 
-background:rgba(245,240,220,.95);
+/* ==========================================
+ *  WYSZUKIWARKA
+ = *========================================= */
 
-border:1px solid #bca06a;
+#search-container {
 
-padding:12px;
+position: fixed;
 
-font-family:'Cormorant Garamond';
+top: 10px;
+left: 60px;
 
-font-size:20px;
+width: 300px;
 
-box-sizing:border-box;
-
-}
-
-
-#search-results{
-
-background:rgba(245,240,220,.95);
-
-max-height:300px;
-
-overflow-y:auto;
-
-border:none;
+z-index: 1000;
 
 }
 
 
-#search-results:not(:empty){
+/* Pole wyszukiwania */
 
-border:1px solid #bca06a;
+#search {
 
-margin-top:4px;
+background:
+rgba(245,240,220,.95);
+
+border:
+1px solid #bca06a;
+
+padding: 12px;
+
+font-family:
+'Cormorant Garamond';
+
+font-size: 20px;
+
+box-sizing: border-box;
 
 }
 
 
-.search-result{
+/* Lista wyników */
 
-    padding:8px;
+#search-results {
 
-    cursor:pointer;
+background:
+rgba(245,240,220,.95);
+
+max-height: 300px;
+
+overflow-y: auto;
+
+border: none;
 
 }
 
 
-.search-result:hover{
+#search-results:not(:empty) {
 
-    background:rgba(210,180,120,.2);
+border:
+1px solid #bca06a;
+
+margin-top: 4px;
+
+}
+
+
+/* Pojedynczy wynik */
+
+.search-result {
+
+    padding: 8px;
+
+    cursor: pointer;
+
+}
+
+
+.search-result:hover {
+
+    background:
+    rgba(210,180,120,.2);
 
 }

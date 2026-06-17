@@ -1,8 +1,19 @@
+/* ==========================================
+   KONFIGURACJA
+ ========================================= */
+
 const imageWidth = 2560;
 const imageHeight = 1656;
+
 const markers = {};
 
-const SHEET_ID = "1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
+const SHEET_ID =
+"1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
+
+
+/* ==========================================
+   DANE Z GOOGLE SHEETS
+ ======================================== */
 
 let lokalizacje = [];
 let druzyny = [];
@@ -10,28 +21,77 @@ let tagi = [];
 let sesje = [];
 
 const SHEETS = {
+
     lokalizacje: "0",
+
     druzyny: "358228522",
+
     tagi: "1613408979",
+
     sesje: "1580573064"
+
 };
 
 
+
+/* ==========================================
+   ELEMENTY DOM
+ ======================================== */
+
 const search =
 document.getElementById("search");
+
+
 const results =
 document.getElementById("search-results");
 
 
+const coords =
+document.getElementById("coords");
+
+
+const sessionPanel =
+document.getElementById("session-panel");
+
+
+const sessionHeader =
+document.getElementById("session-header");
+
+
+const sessionContent =
+document.getElementById("session-content");
+
+
+
+/* ==========================================
+   STAN AKTUALNIE OTWARTEJ LOKALIZACJI
+ ========================================= */
+
 let currentLocationSessions = [];
+
 let currentSessionIndex = 0;
 
+
+
+/* ==========================================
+   LEAFLET
+ ========================================= */
+
 const map = L.map("map", {
+
     crs: L.CRS.Simple,
+
     minZoom: -4,
+
     maxZoom: 3
+
 });
 
+
+
+/* ==========================================
+   IKONA PINEZKI
+ ========================================== */
 
 const pinIcon = L.icon({
 
@@ -46,15 +106,44 @@ const pinIcon = L.icon({
 });
 
 
+
+/* ==========================================
+   GRANICE MAPY
+ ========================================= */
+
 const bounds = [
+
     [0, 0],
+
 [imageHeight, imageWidth]
+
 ];
 
-L.imageOverlay("assets/mapa.png", bounds).addTo(map);
+
+
+/* ==========================================
+   WARSTWA MAPY
+ ========================================= */
+
+L.imageOverlay(
+
+    "assets/mapa.png",
+
+    bounds
+
+).addTo(map);
+
+
 
 map.fitBounds(bounds);
+
 map.setMaxBounds(bounds);
+
+
+
+/* ==========================================
+   ODSWIEŻENIE LEAFLETA
+ ========================================= */
 
 setTimeout(() => {
 
@@ -64,130 +153,325 @@ setTimeout(() => {
 
 }, 500);
 
-const coords = document.getElementById("coords");
 
-const sessionPanel =
-document.getElementById("session-panel");
 
-const sessionHeader =
-document.getElementById("session-header");
-
-const sessionContent =
-document.getElementById("session-content");
+/* ==========================================
+   FUNKCJE POMOCNICZE
+ ========================================= */
 
 function searchMatches(text, value) {
 
     if (!value) {
+
         return false;
+
     }
 
+
     return value
+
     .toLowerCase()
+
     .includes(text);
 
 }
 
+
+
+/* ==========================================
+   WSPÓŁRZĘDNE ZNORMALIZOWANE
+ ========================================= */
+
 function getNormalizedCoords(latlng) {
 
-    const x = latlng.lng / imageWidth;
-    const y = 1 - (latlng.lat / imageHeight);
+    const x =
+
+    latlng.lng / imageWidth;
+
+
+    const y =
+
+    1 - (
+
+        latlng.lat /
+
+        imageHeight
+
+    );
+
 
     return {
+
         x,
+
         y
+
     };
+
 }
 
-map.on("mousemove", function (e) {
 
-    const pos = getNormalizedCoords(e.latlng);
 
-    coords.innerHTML =
-    `X: ${pos.x.toFixed(4)}<br>` +
-    `Y: ${pos.y.toFixed(4)}`;
-});
+/* ==========================================
+   WYŚWIETLANIE WSPÓŁRZĘDNYCH
+ ========================================= */
 
-map.on("contextmenu", function (e) {
+map.on(
 
-    const pos = getNormalizedCoords(e.latlng);
+    "mousemove",
 
-    const x = pos.x.toFixed(4);
-    const y = pos.y.toFixed(4);
+    function (e) {
 
-    navigator.clipboard.writeText(`${x},${y}`);
+        const pos =
 
-    L.popup()
-    .setLatLng(e.latlng)
-    .setContent(`
-    <b>Skopiowano współrzędne</b><br>
-    X: ${x}<br>
-    Y: ${y}
-    `)
-    .openOn(map);
-});
+        getNormalizedCoords(
+
+            e.latlng
+
+        );
+
+
+        coords.innerHTML =
+
+        `X: ${pos.x.toFixed(4)}<br>` +
+
+        `Y: ${pos.y.toFixed(4)}`;
+
+    }
+
+);
+
+
+
+/* ==========================================
+   KOPIOWANIE WSPÓŁRZĘDNYCH PPM
+ ========================================= */
+
+map.on(
+
+    "contextmenu",
+
+    function (e) {
+
+
+        const pos =
+
+        getNormalizedCoords(
+
+            e.latlng
+
+        );
+
+
+        const x =
+
+        pos.x.toFixed(4);
+
+
+        const y =
+
+        pos.y.toFixed(4);
+
+
+
+        navigator.clipboard.writeText(
+
+            `${x},${y}`
+
+        );
+
+
+
+        L.popup()
+
+        .setLatLng(
+
+            e.latlng
+
+        )
+
+        .setContent(`
+
+        <b>Skopiowano współrzędne</b><br>
+
+        X: ${x}<br>
+
+        Y: ${y}
+
+        `)
+
+        .openOn(map);
+
+    }
+
+);
+
+
+
+/* ==========================================
+   GOOGLE SHEETS
+ ========================================= */
 
 async function loadSheet(sheetName) {
 
     const csvUrl =
+
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEETS[sheetName]}`;
+
+
 
     return new Promise((resolve) => {
 
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
 
-            complete: function(results) {
-                resolve(results.data);
+        Papa.parse(
+
+            csvUrl,
+
+            {
+
+                download: true,
+
+                header: true,
+
+                skipEmptyLines: true,
+
+
+                complete: function(results) {
+
+                    resolve(
+
+                        results.data
+
+                    );
+
+                }
+
             }
-        });
+
+        );
 
     });
+
 }
+
+
+
+/* ==========================================
+   DRUŻYNY
+ ========================================= */
 
 function getTeam(teamId) {
 
+
     return druzyny.find(
-        team => team.id === teamId
+
+        team =>
+
+        team.id === teamId
+
     );
 
 }
 
 
+
+/* ==========================================
+   GOOGLE DRIVE
+ ========================================= */
+
 function getDriveImage(id) {
+
 
     return `https://drive.google.com/thumbnail?id=${id}&sz=w256`;
 
 }
 
+
+
+/* ==========================================
+   SESJE DLA LOKALIZACJI
+ ========================================= */
+
 function getSessionsForLocation(locationId) {
 
+
     return sesje
+
+
     .filter(session => {
 
-        if (!session.lokalizacje) {
+
+        if (
+
+            !session.lokalizacje
+
+        ) {
+
             return false;
+
         }
 
-        const locations = session.lokalizacje
-        .split(";")
-        .map(x => x.trim());
 
-        return locations.includes(locationId);
+        const locations =
+
+        session.lokalizacje
+
+
+        .split(";")
+
+
+        .map(
+
+            x => x.trim()
+
+        );
+
+
+
+        return locations.includes(
+
+            locationId
+
+        );
 
     })
+
+
     .sort((a, b) => {
 
+
         const idA =
-        Number(a.id.match(/\d+/)?.[0] || 0);
+
+        Number(
+
+            a.id.match(/\d+/)?.[0]
+
+            || 0
+
+        );
+
 
         const idB =
-        Number(b.id.match(/\d+/)?.[0] || 0);
+
+        Number(
+
+            b.id.match(/\d+/)?.[0]
+
+            || 0
+
+        );
+
 
         return idA - idB;
+
+
     });
+
 }
+
+/* ==========================================
+   PANEL SESJI
+ ========================================= */
 
 function renderCurrentSession() {
 
@@ -197,21 +481,48 @@ function renderCurrentSession() {
         "<p>Brak sesji.</p>";
 
         return;
+
     }
 
-    const session =
-    currentLocationSessions[currentSessionIndex];
 
-    const teams = session.druzyny
-    ? session.druzyny
+    const session =
+
+    currentLocationSessions[
+        currentSessionIndex
+    ];
+
+
+
+    /* Pobranie drużyn uczestniczących w sesji */
+
+    const teams =
+
+    session.druzyny
+
+    ?
+
+    session.druzyny
+
     .split(";")
+
     .map(x => x.trim())
+
     .map(getTeam)
+
     .filter(Boolean)
-    : [];
+
+    :
+
+    [];
+
+
+
+    /* Render zawartości panelu */
 
     sessionContent.innerHTML = `
+
     <div style="margin-bottom:20px;">
+
 
     <div style="
     display:flex;
@@ -220,186 +531,427 @@ function renderCurrentSession() {
     margin-bottom:15px;
     ">
 
+
     <button id="prev-session">
+
     ◀
+
     </button>
+
+
 
     <div>
+
     ${currentSessionIndex + 1}
-    / ${currentLocationSessions.length}
+
+    /
+
+    ${currentLocationSessions.length}
+
     </div>
+
+
 
     <button id="next-session">
+
     ▶
+
     </button>
 
+
     </div>
+
 
 
     ${teams.length ? `
 
+
         <div class="session-logos">
+
 
         ${teams.map(team => `
 
+
             <img
+
             src="${getDriveImage(team.logo_id)}">
+
 
             `).join("")}
 
+
             </div>
+
 
             ` : ""}
 
 
-        <h2 style="text-align:center;">
-        ${session.numer_sesji || ""}
-        </h2>
 
-        <h3 style="text-align:center;">
-        ${session.tytul || ""}
-        </h3>
+            <h2 style="text-align:center;">
 
-        ${
-            session.link
-            ?
-            `
+            ${session.numer_sesji || ""}
+
+            </h2>
+
+
+
+            <h3 style="text-align:center;">
+
+            ${session.tytul || ""}
+
+            </h3>
+
+
+
+            ${
+
+                session.link
+
+                ?
+
+                `
+
+                <p style="text-align:center;">
+
+                <a
+
+                href="${session.link}"
+
+                target="_blank">
+
+                Obejrzyj
+
+                </a>
+
+                </p>
+
+                `
+
+                :
+
+                ""
+
+            }
+
+
+
             <p style="text-align:center;">
-            <a href="${session.link}"
-            target="_blank">
-            Obejrzyj
-            </a>
+
+            ${session.data || ""}
+
             </p>
-            `
-            :
-            ""
-        }
 
-        <p style="text-align:center;">
-        ${session.data || ""}
-        </p>
 
-        <div>
-        ${session.opis || ""}
-        </div>
 
-        </div>
-        `;
+            <div>
 
-    const prevButton =
-    document.getElementById("prev-session");
+            ${session.opis || ""}
 
-    const nextButton =
-    document.getElementById("next-session");
+            </div>
 
-    prevButton.disabled =
-    currentSessionIndex === 0;
 
-    nextButton.disabled =
-    currentSessionIndex ===
-    currentLocationSessions.length - 1;
 
-    prevButton.addEventListener("click", () => {
+            </div>
 
-        if (currentSessionIndex > 0) {
+            `;
 
-            currentSessionIndex--;
 
-            renderCurrentSession();
-        }
-    });
 
-    nextButton.addEventListener("click", () => {
+            /* Przyciski karuzeli */
 
-        if (
-            currentSessionIndex <
-            currentLocationSessions.length - 1
-        ) {
+            const prevButton =
 
-            currentSessionIndex++;
+            document.getElementById(
 
-            renderCurrentSession();
-        }
-    });
+                "prev-session"
+
+            );
+
+
+            const nextButton =
+
+            document.getElementById(
+
+                "next-session"
+
+            );
+
+
+
+            prevButton.disabled =
+
+            currentSessionIndex === 0;
+
+
+
+            nextButton.disabled =
+
+            currentSessionIndex ===
+
+            currentLocationSessions.length - 1;
+
+
+
+            prevButton.addEventListener(
+
+                "click",
+
+                () => {
+
+
+                    if (
+
+                        currentSessionIndex > 0
+
+                    ) {
+
+
+                        currentSessionIndex--;
+
+
+                        renderCurrentSession();
+
+                    }
+
+                }
+
+            );
+
+
+
+            nextButton.addEventListener(
+
+                "click",
+
+                () => {
+
+
+                    if (
+
+                        currentSessionIndex <
+
+                        currentLocationSessions.length - 1
+
+                    ) {
+
+
+                        currentSessionIndex++;
+
+
+                        renderCurrentSession();
+
+                    }
+
+                }
+
+            );
+
 }
 
+
+
+/* ==========================================
+   OTWIERANIE PANELU LOKALIZACJI
+ ========================================= */
+
 function openLocationPanel(
+
     location,
+
     locationSessions
+
 ) {
 
-    sessionPanel.classList.remove("hidden");
+
+    sessionPanel.classList.remove(
+
+        "hidden"
+
+    );
+
+
 
     sessionHeader.textContent =
+
     location.nazwa;
 
+
+
     currentLocationSessions =
+
     locationSessions;
+
+
 
     currentSessionIndex = 0;
 
+
+
     renderCurrentSession();
+
 }
+
+
+
+/* ==========================================
+  MARKERY LOKALIZACJI
+ ========================================= */
 
 function drawLocations() {
 
+
     lokalizacje.forEach(location => {
 
-        if (!location.x || !location.y) {
+
+        if (
+
+            !location.x ||
+
+            !location.y
+
+        ) {
+
             return;
+
         }
 
+
+
+        /* Konwersja współrzędnych */
+
         const lat =
-        (1 - parseFloat(location.y)) * imageHeight;
+
+        (
+
+            1 -
+
+            parseFloat(
+
+                location.y
+
+            )
+
+        )
+
+        *
+
+        imageHeight;
+
+
 
         const lng =
-        parseFloat(location.x) * imageWidth;
+
+        parseFloat(
+
+            location.x
+
+        )
+
+        *
+
+        imageWidth;
+
+
 
         const locationSessions =
-        getSessionsForLocation(location.id);
+
+
+        getSessionsForLocation(
+
+            location.id
+
+        );
+
+
 
         const marker =
-        L.marker([lat, lng], {
 
-            icon: pinIcon
 
-        })
+        L.marker(
+
+            [lat, lng],
+
+            {
+
+                icon: pinIcon
+
+            }
+
+        )
+
         .addTo(map);
-        markers[location.id]=marker;
 
-        marker.on("click", () => {
 
-            openLocationPanel(
-                location,
-                locationSessions
-            );
 
-        });
+        markers[location.id] = marker;
+
+
+
+        marker.on(
+
+            "click",
+
+            () => {
+
+
+                openLocationPanel(
+
+                    location,
+
+                    locationSessions
+
+                );
+
+            }
+
+        );
+
+
     });
+
 }
+
+/* ==========================================
+ WYSZUKIWARKA
+ ========================================== */
 
 search.addEventListener("input", () => {
 
     const text =
+
     search.value
     .toLowerCase()
     .trim();
 
+
     results.innerHTML = "";
 
+
     if (!text) {
+
         return;
+
     }
 
 
-    // Lokalizacje
+    /* Lokalizacje */
 
     lokalizacje.forEach(location => {
 
         if (
-            searchMatches(text, location.nazwa)
+
+            searchMatches(
+                text,
+                location.nazwa
+            )
+
             ||
-            searchMatches(text, location.id)
+
+            searchMatches(
+                text,
+                location.id
+            )
+
         ) {
 
             addLocationResult(location);
@@ -410,48 +962,69 @@ search.addEventListener("input", () => {
 
 
 
-    // Drużyny
+    /* Drużyny */
 
     druzyny.forEach(team => {
 
+
         if (
 
-            searchMatches(text, team.nazwa)
-            ||
-            searchMatches(text, team.id)
+            searchMatches(
+                text,
+                team.nazwa
+            )
 
-        ){
+            ||
+
+            searchMatches(
+                text,
+                team.id
+            )
+
+        ) {
+
 
             addTeamResult(team);
 
         }
 
+
     });
 
 
 
-    // Tagi
+    /* Tagi */
 
     tagi.forEach(tag => {
 
+
         if (
 
-            searchMatches(text, tag.nazwa)
-            ||
-            searchMatches(text, tag.id)
+            searchMatches(
+                text,
+                tag.nazwa
+            )
 
-        ){
+            ||
+
+            searchMatches(
+                text,
+                tag.id
+            )
+
+        ) {
+
 
             addTagResult(tag);
 
         }
 
+
     });
 
 
 
-    // Sesje
-
+    /* Sesje */
 
     sesje.forEach(session => {
 
@@ -459,208 +1032,372 @@ search.addEventListener("input", () => {
         if (
 
             searchMatches(
+
                 text,
+
                 session.tytul
+
             )
 
             ||
 
             searchMatches(
+
                 text,
+
                 session.numer_sesji
+
             )
 
             ||
 
             searchMatches(
+
                 text,
+
                 session.data
+
             )
 
-        ){
+        ) {
+
 
             addSessionResult(
+
                 session
+
             );
 
         }
 
+
     });
+
 
 });
 
-function addLocationResult(location){
+
+
+/* ==========================================
+ WYNIKI WYSZUKIWANIA
+ ========================================== */
+
+function addLocationResult(location) {
+
 
     const div =
+
     document.createElement("div");
 
+
     div.className =
+
     "search-result";
 
-            div.textContent =
-            `📍 ${location.nazwa}`;
 
 
-            div.onclick = ()=>{
+        div.textContent =
+
+        `📍 ${location.nazwa}`;
+
+
+
+        div.onclick = () => {
+
+
+            const marker =
+
+            markers[location.id];
+
+
+
+            map.flyTo(
+
+                marker.getLatLng(),
+
+                      2
+
+            );
+
+
+
+            marker.fire(
+
+                "click"
+
+            );
+
+
+
+            results.innerHTML = "";
+
+            search.value = "";
+
+
+        };
+
+
+
+        results.appendChild(
+
+            div
+
+        );
+
+}
+
+
+
+function addTeamResult(team) {
+
+
+    const div =
+
+    document.createElement(
+
+        "div"
+
+    );
+
+
+
+    div.className =
+
+    "search-result";
+
+
+
+        div.textContent =
+
+        `👥 ${team.nazwa}`;
+
+
+
+        results.appendChild(
+
+            div
+
+        );
+
+}
+
+
+
+function addTagResult(tag) {
+
+
+    const div =
+
+    document.createElement(
+
+        "div"
+
+    );
+
+
+
+    div.className =
+
+    "search-result";
+
+
+
+        div.textContent =
+
+        `🏷️ ${tag.nazwa}`;
+
+
+
+        results.appendChild(
+
+            div
+
+        );
+
+}
+
+
+
+function addSessionResult(session) {
+
+
+    const div =
+
+    document.createElement(
+
+        "div"
+
+    );
+
+
+
+    div.className =
+
+    "search-result";
+
+
+
+        div.textContent =
+
+
+        `🎲 ${
+
+            session.numer_sesji
+
+        } - ${
+
+            session.tytul
+
+        }`;
+
+
+
+        div.onclick = () => {
+
+
+
+            const locationId =
+
+
+            session.lokalizacje
+
+            .split(";")[0]
+
+            .trim();
+
+
+
+            const location =
+
+
+            lokalizacje.find(
+
+
+                l =>
+
+                l.id === locationId
+
+
+            );
+
+
+
+            if (
+
+                !location
+
+            )
+
+                return;
+
 
 
                 const marker =
-                markers[location.id];
 
-
-                map.flyTo(
-
-                    marker.getLatLng(),
-                          2
-
-                );
-
-
-                marker.fire("click");
-
-
-                results.innerHTML="";
-
-                search.value="";
-
-            };
-
-
-            results.appendChild(div);
-
-}
-
-function addTeamResult(team){
-
-
-    const div =
-    document.createElement("div");
-
-
-    div.className =
-    "search-result";
-
-
-            div.textContent =
-            `👥 ${team.nazwa}`;
-
-
-            results.appendChild(div);
-
-}
-
-function addTagResult(tag){
-
-
-    const div =
-    document.createElement("div");
-
-
-    div.className =
-    "search-result";
-
-
-            div.textContent =
-            `🏷️ ${tag.nazwa}`;
-
-
-            results.appendChild(div);
-
-}
-
-function addSessionResult(session){
-
-
-    const div =
-    document.createElement("div");
-
-
-    div.className =
-    "search-result";
-
-
-            div.textContent =
-
-            `🎲 ${
-                session.numer_sesji
-            } - ${
-                session.tytul
-            }`;
-
-
-
-            div.onclick = ()=>{
-
-
-                const locationId =
-
-                session.lokalizacje
-                .split(";")[0]
-                .trim();
-
-
-
-                const location =
-
-                lokalizacje.find(
-
-                    l=>l.id===locationId
-
-                );
-
-
-                if(!location)
-                    return;
-
-
-
-                const marker =
 
                 markers[
+
                     location.id
+
                 ];
 
 
 
-                marker.fire("click");
+                marker.fire(
 
-
-
-                map.flyTo(
-
-                    marker.getLatLng(),
-                          2
+                    "click"
 
                 );
 
 
 
-                search.value="";
-
-                results.innerHTML="";
-
-            };
+                map.flyTo(
 
 
-            results.appendChild(div);
+                    marker.getLatLng(),
+
+
+                          2
+
+
+                );
+
+
+
+                search.value = "";
+
+                results.innerHTML = "";
+
+
+        };
+
+
+
+        results.appendChild(
+
+            div
+
+        );
 
 }
+
+
+
+/* ==========================================
+ ŁADOWANIE DANYCH
+ ========================================== */
 
 async function loadData() {
 
+
     lokalizacje =
-    await loadSheet("lokalizacje");
+
+    await loadSheet(
+
+        "lokalizacje"
+
+    );
+
+
 
     druzyny =
-    await loadSheet("druzyny");
+
+    await loadSheet(
+
+        "druzyny"
+
+    );
+
+
 
     tagi =
-    await loadSheet("tagi");
+
+    await loadSheet(
+
+        "tagi"
+
+    );
+
+
 
     sesje =
-    await loadSheet("sesje");
+
+    await loadSheet(
+
+        "sesje"
+
+    );
+
+
 
     drawLocations();
+
 }
+
+
+
+/* ==========================================
+ START APLIKACJI
+ ========================================== */
 
 loadData();
