@@ -85,6 +85,9 @@ border:none;
 padding-bottom:25px;
 
 }
+
+.hidden {
+    display: none;
 }
 
 #session-content{
@@ -97,6 +100,23 @@ font-size:22px;
 line-height:1.6;
 
 color:#efe7c9;
+
+}
+
+#session-content a{
+
+color:#eadfb3;
+
+text-decoration:none;
+
+}
+
+#session-content a:hover{
+
+color:#fff3c5;
+
+text-shadow:
+0 0 6px rgba(255,230,160,.5);
 
 }
 
