@@ -104,21 +104,6 @@ async function loadSheet(sheetName) {
     });
 }
 
-function getTeam(teamId) {
-
-    return druzyny.find(
-        team => team.id === teamId
-    );
-
-}
-
-
-function getDriveImage(id) {
-
-    return `https://drive.google.com/thumbnail?id=${id}&sz=w256`;
-
-}
-
 function getSessionsForLocation(locationId) {
 
     return sesje
@@ -160,14 +145,6 @@ function renderCurrentSession() {
     const session =
     currentLocationSessions[currentSessionIndex];
 
-    const team =
-    getTeam(session.druzyny);
-
-    const logo =
-    team?.logo_id
-    ? getDriveImage(team.logo_id)
-    : "";
-
     sessionContent.innerHTML = `
     <div style="margin-bottom:20px;">
 
@@ -184,7 +161,8 @@ function renderCurrentSession() {
 
     <div>
     ${currentSessionIndex + 1}
-    / ${currentLocationSessions.length}
+    /
+    ${currentLocationSessions.length}
     </div>
 
     <button id="next-session">
@@ -193,63 +171,37 @@ function renderCurrentSession() {
 
     </div>
 
+    <h2>
+    Sesja ${session.numer_sesji}
+    </h2>
 
-    ${logo ?
+    <h3>
+    ${session.tytul || ""}
+    </h3>
 
-        `
-        <div style="
-        text-align:center;
-        margin-bottom:15px;
-        ">
+    <p>
+    ${session.data || ""}
+    </p>
 
-        <img
-        src="${logo}"
-
-        style="
-        max-width:120px;
-        max-height:120px;
-        object-fit:contain;
-        ">
-
-        </div>
-        `
-
-        : ""}
-
-
-        <h2 style="text-align:center;">
-        ${session.numer_sesji || ""}
-        </h2>
-
-        <h3 style="text-align:center;">
-        ${session.tytul || ""}
-        </h3>
-
-        <p style="text-align:center;">
-        ${session.data || ""}
+    ${
+        session.link
+        ? `
+        <p>
+        <a href="${session.link}"
+        target="_blank">
+        Obejrzyj
+        </a>
         </p>
+        `
+        : ""
+    }
 
-        ${
-            session.link
-            ?
-            `
-            <p style="text-align:center;">
-            <a href="${session.link}"
-            target="_blank">
-            Obejrzyj
-            </a>
-            </p>
-            `
-            :
-            ""
-        }
+    <div>
+    ${session.opis || ""}
+    </div>
 
-        <div>
-        ${session.opis || ""}
-        </div>
-
-        </div>
-        `;
+    </div>
+    `;
 
     const prevButton =
     document.getElementById("prev-session");
