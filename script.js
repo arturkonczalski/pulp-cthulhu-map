@@ -1,5 +1,6 @@
 const imageWidth = 2560;
 const imageHeight = 1656;
+const markers = {};
 
 const SHEET_ID = "1J8ZHhp49L5Z6AGQr1egbe9qYD3n6d_PUWvtsChv2aXY";
 
@@ -14,6 +15,13 @@ const SHEETS = {
     tagi: "1613408979",
     sesje: "1580573064"
 };
+
+
+const search =
+document.getElementById("search");
+const results =
+document.getElementById("search-results");
+
 
 let currentLocationSessions = [];
 let currentSessionIndex = 0;
@@ -326,6 +334,7 @@ function drawLocations() {
         const marker =
         L.marker([lat, lng])
         .addTo(map);
+        markers[location.id]=marker;
 
         marker.on("click", () => {
 
@@ -337,6 +346,102 @@ function drawLocations() {
         });
     });
 }
+
+search.addEventListener("input", ()=>{
+
+
+    const text =
+    search.value.toLowerCase();
+
+
+
+    results.innerHTML="";
+
+
+
+    if (text === "") {
+
+        results.innerHTML = "";
+
+        return;
+    }
+
+
+
+    lokalizacje.forEach(location=>{
+
+
+        if (
+
+            (
+                location.nazwa &&
+                location.nazwa
+                .toLowerCase()
+                .includes(text)
+            )
+
+            ||
+
+            (
+                location.id &&
+                location.id
+                .toLowerCase()
+                .includes(text)
+            )
+
+        ){
+
+
+            const div =
+            document.createElement("div");
+
+
+            div.className =
+            "search-result";
+
+
+    div.textContent=
+    location.nazwa;
+
+
+
+    div.onclick=()=>{
+
+
+        const marker =
+        markers[location.id];
+
+
+
+        map.flyTo(
+            marker.getLatLng(),
+                  1
+        );
+
+
+
+        marker.fire("click");
+
+
+
+        results.innerHTML="";
+
+
+        search.value="";
+
+    };
+
+
+    results.appendChild(div);
+
+
+        }
+
+
+    });
+
+
+});
 
 async function loadData() {
 

@@ -63,3 +63,54 @@ padding: 16px;
 .hidden {
     display: none;
 }
+
+#search-container{
+
+position:fixed;
+
+top:10px;
+left:10px;
+
+z-index:1000;
+
+width:300px;
+
+}
+
+
+#search{
+
+width:100%;
+
+padding:10px;
+
+box-sizing:border-box;
+
+}
+
+
+#search-results{
+
+background:white;
+
+max-height:300px;
+
+overflow-y:auto;
+
+}
+
+
+.search-result{
+
+    padding:8px;
+
+    cursor:pointer;
+
+}
+
+
+.search-result:hover{
+
+    background:#eee;
+
+}
