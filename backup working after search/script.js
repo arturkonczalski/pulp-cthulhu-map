@@ -53,18 +53,6 @@ document.getElementById("session-header");
 const sessionContent =
 document.getElementById("session-content");
 
-function searchMatches(text, value) {
-
-    if (!value) {
-        return false;
-    }
-
-    return value
-    .toLowerCase()
-    .includes(text);
-
-}
-
 function getNormalizedCoords(latlng) {
 
     const x = latlng.lng / imageWidth;
@@ -359,273 +347,101 @@ function drawLocations() {
     });
 }
 
-search.addEventListener("input", () => {
+search.addEventListener("input", ()=>{
+
 
     const text =
-    search.value
-    .toLowerCase()
-    .trim();
+    search.value.toLowerCase();
 
-    results.innerHTML = "";
 
-    if (!text) {
+
+    results.innerHTML="";
+
+
+
+    if (text === "") {
+
+        results.innerHTML = "";
+
         return;
     }
 
 
-    // Lokalizacje
 
-    lokalizacje.forEach(location => {
-
-        if (
-            searchMatches(text, location.nazwa)
-            ||
-            searchMatches(text, location.id)
-        ) {
-
-            addLocationResult(location);
-
-        }
-
-    });
-
-
-
-    // Drużyny
-
-    druzyny.forEach(team => {
-
-        if (
-
-            searchMatches(text, team.nazwa)
-            ||
-            searchMatches(text, team.id)
-
-        ){
-
-            addTeamResult(team);
-
-        }
-
-    });
-
-
-
-    // Tagi
-
-    tagi.forEach(tag => {
-
-        if (
-
-            searchMatches(text, tag.nazwa)
-            ||
-            searchMatches(text, tag.id)
-
-        ){
-
-            addTagResult(tag);
-
-        }
-
-    });
-
-
-
-    // Sesje
-
-
-    sesje.forEach(session => {
+    lokalizacje.forEach(location=>{
 
 
         if (
 
-            searchMatches(
-                text,
-                session.tytul
+            (
+                location.nazwa &&
+                location.nazwa
+                .toLowerCase()
+                .includes(text)
             )
 
             ||
 
-            searchMatches(
-                text,
-                session.numer_sesji
-            )
-
-            ||
-
-            searchMatches(
-                text,
-                session.data
+            (
+                location.id &&
+                location.id
+                .toLowerCase()
+                .includes(text)
             )
 
         ){
 
-            addSessionResult(
-                session
-            );
+
+            const div =
+            document.createElement("div");
+
+
+            div.className =
+            "search-result";
+
+
+    div.textContent=
+    location.nazwa;
+
+
+
+    div.onclick=()=>{
+
+
+        const marker =
+        markers[location.id];
+
+
+
+        map.flyTo(
+            marker.getLatLng(),
+                  1
+        );
+
+
+
+        marker.fire("click");
+
+
+
+        results.innerHTML="";
+
+
+        search.value="";
+
+    };
+
+
+    results.appendChild(div);
+
 
         }
 
+
     });
+
 
 });
-
-function addLocationResult(location){
-
-    const div =
-    document.createElement("div");
-
-    div.className =
-    "search-result";
-
-            div.textContent =
-            `📍 ${location.nazwa}`;
-
-
-            div.onclick = ()=>{
-
-
-                const marker =
-                markers[location.id];
-
-
-                map.flyTo(
-
-                    marker.getLatLng(),
-                          2
-
-                );
-
-
-                marker.fire("click");
-
-
-                results.innerHTML="";
-
-                search.value="";
-
-            };
-
-
-            results.appendChild(div);
-
-}
-
-function addTeamResult(team){
-
-
-    const div =
-    document.createElement("div");
-
-
-    div.className =
-    "search-result";
-
-
-            div.textContent =
-            `👥 ${team.nazwa}`;
-
-
-            results.appendChild(div);
-
-}
-
-function addTagResult(tag){
-
-
-    const div =
-    document.createElement("div");
-
-
-    div.className =
-    "search-result";
-
-
-            div.textContent =
-            `🏷️ ${tag.nazwa}`;
-
-
-            results.appendChild(div);
-
-}
-
-function addSessionResult(session){
-
-
-    const div =
-    document.createElement("div");
-
-
-    div.className =
-    "search-result";
-
-
-            div.textContent =
-
-            `🎲 ${
-                session.numer_sesji
-            } - ${
-                session.tytul
-            }`;
-
-
-
-            div.onclick = ()=>{
-
-
-                const locationId =
-
-                session.lokalizacje
-                .split(";")[0]
-                .trim();
-
-
-
-                const location =
-
-                lokalizacje.find(
-
-                    l=>l.id===locationId
-
-                );
-
-
-                if(!location)
-                    return;
-
-
-
-                const marker =
-
-                markers[
-                    location.id
-                ];
-
-
-
-                marker.fire("click");
-
-
-
-                map.flyTo(
-
-                    marker.getLatLng(),
-                          2
-
-                );
-
-
-
-                search.value="";
-
-                results.innerHTML="";
-
-            };
-
-
-            results.appendChild(div);
-
-}
 
 async function loadData() {
 
